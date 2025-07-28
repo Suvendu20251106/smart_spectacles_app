@@ -2,6 +2,10 @@ import streamlit as st
 import cv2
 import numpy as np
 import pyttsx3
+from gtts import gTTS
+import os
+import tempfile
+import playsound
 from ultralytics import YOLO
 
 # Load YOLOv8 model
@@ -11,6 +15,12 @@ model = YOLO('yolov8n.pt')  # lightweight model
 engine = pyttsx3.init()
 
 def speak(text):
+    tts = gTTS(text=text, lang='en')
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".mp3") as fp:
+        temp_path = fp.name
+        tts.save(temp_path)
+    playsound.playsound(temp_path)
+    os.remove(temp_path)
     engine.say(text)
     engine.runAndWait()
 
